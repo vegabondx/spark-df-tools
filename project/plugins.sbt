@@ -1,0 +1,6 @@
+addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.0.5")
+addSbtPlugin("org.scoverage" % "sbt-scoverage" % "1.6.0")
+addSbtPlugin("ch.epfl.scala" % "sbt-scalafix" % "0.9.7")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.10")
+addSbtPlugin("com.frugalmechanic" % "fm-sbt-s3-resolver" % "0.19.0")
+addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.11")
