@@ -1,0 +1,70 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+
+# SBT
+.bsp/
+
+# IDE settings
+.idea/
+.project
+.settings
+.classpath
+.settings/
+.metals/
+
+# Avoid ignoring Maven wrapper jar file (.jar files are usually ignored)
+!/.mvn/wrapper/maven-wrapper.jar
+
+*.iml
+# Generic
+*.tmp
+*.swp
+
+# Terraform files
+*.tfstate
+*.tfstate.backup
+# Module directory
+.terraform/
+*.out
+
+# IDE
+*.idea
+
+*.logs
+.DS_Store
+.env
+.metals
+.sandbox
+.venv
+.vscode
+.project
+# marker
+marker
+
+# serverless
+.serverless
+node_modules
+
+# pytz ignore
+pytz
+pytz-2020.1.dist-info
+
+.development/**/*
+!.development/docker-compose.yml
+!.development/README.md
+.DS_Store
+.DS_Store?
+.idea
+.project/**/*
+.sandbox
+target
+.bloop
+.metals*
