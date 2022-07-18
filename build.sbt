@@ -11,7 +11,6 @@ lazy val root = (project in file("."))
   )
   .aggregate(macros)
 
-
 lazy val macros = project
   .settings(
     name := "macros",
@@ -20,12 +19,15 @@ lazy val macros = project
     Test / testOptions += Tests.Argument("-oI"),
     addCompilerPlugin(paradise),
     scalacOptions := Seq("-feature", "-deprecation"),
-    assemblySettings
+    assemblySettings,
+    assembly / assemblyJarName := "utils.jar"
   )
 
 lazy val assemblySettings = Seq(
-  assembly / assemblyOption := (assembly / assemblyOption).value.copy(includeScala = false),
+  assembly / assemblyOption := (assembly / assemblyOption).value
+    .copy(includeScala = false),
   assembly / assemblyMergeStrategy := {
     case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
-    case _ => MergeStrategy.first
-  })
+    case _                                   => MergeStrategy.first
+  }
+)
