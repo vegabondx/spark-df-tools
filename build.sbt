@@ -1,7 +1,5 @@
 import Dependencies._
 name := "spark-dataframe-tools"
-ThisBuild / scalaVersion := "2.12.12"
-ThisBuild / organization := "abhijitoka"
 Test / testOptions += Tests.Argument(TestFrameworks.ScalaTest, "-oD")
 lazy val root = (project in file("."))
   .settings(
@@ -54,7 +52,6 @@ lazy val buildSettings = Seq(
   // and the way the plugin works in multi module projects
   scalacOptions += "-Ywarn-unused-import",
   assembly / test := {},
-  assembleArtifact := false,
   assembly / aggregate := false,
   Test / fork := true,
   Test / parallelExecution := false,
