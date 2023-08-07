@@ -2,7 +2,6 @@ package com.github.vegabondx.dftools.macros
 
 import org.apache.spark.sql.functions.{col, lower, when}
 import org.apache.spark.sql.{Column, DataFrame}
-
 object DfTools {
 
   /** helper function converting columnames to seq
@@ -19,6 +18,15 @@ object DfTools {
   def seqToCol(colString: String, char: Char = ','): Seq[Column] =
     colString.split(char).map(c => col(c))
 
+  /**
+   * Creates condition over primary key to filter it to a single row
+   * can be then applied to df or any other data frame
+   * @param df  a filtered dataframe with a condition to be tested
+   * @param key key to be picked
+   */
+  def pick(df:DataFrame,key:Seq[String]): Column = key.map(k=> col(k) <=> df.head(1)(0).getAs[String](k)).reduce(_ && _)
+
+
   /** Creates join expressions for similar tables
     *
     * @param keys
@@ -27,7 +35,7 @@ object DfTools {
     * @param sfx suffix attached to the RIGHT table
     * @return
     */
-  def joinExpr(
+  def getJoinExpr(
       keys: Seq[String],
       left: DataFrame,
       right: DataFrame,
@@ -80,13 +88,15 @@ object DfTools {
       dropKeyCols: Boolean = false
   ): DataFrame = {
     val rightsfx = addSuffix(right, sfx)
-    val je = joinExpr(keys, left, rightsfx, sfx)
+    val je = getJoinExpr(keys, left, rightsfx, sfx)
     val joint = left.join(rightsfx, je, method)
     dropKeyCols match {
       case true  => joint.drop(keys.map(_ + sfx): _*)
       case false => joint
     }
   }
+
+
 
   /** Compares similar dataframe columns
     *
@@ -103,6 +113,37 @@ object DfTools {
     compCol.foldLeft(joint)((df, clmn) =>
       df.withColumn(clmn + "_eq", joint(clmn) <=> joint(clmn + sfx))
     )
+
+  // TODO check if columns match
+  // TODO check if primary keys is primary key
+  /**
+   * @param left Left Dataframe
+   * @param right Right dataframe
+   * @param keys Primary Key
+   * @param compCol columns to compare
+   * @param full if all the full join needs to be extracted out
+   * @return Key + comparison columns + aggregated comparison
+   */
+  def checkEquality(
+                     left: DataFrame,
+                     right: DataFrame,
+                     keys: Seq[String],
+                     compCol: Seq[String],
+                     full: Boolean = false
+                   ): DataFrame = {
+    val jx = getJoinExpr(keys, left, right)
+    val joint = left.join(right, jx, "inner")
+    val compColOut = compCol.map(x => left(x) <=> right(x) as x + "_eq")
+    val leftNonKeys = left.columns.toSet.diff(keys.toSet).toSeq
+    val rightNonKeys = right.columns.toSet.diff(keys.toSet).toSeq
+    val outputCols = full match {
+      case false => keys.map(left(_)) ++ compColOut
+      case _ => keys.map(left(_)) ++ leftNonKeys.map(left(_)) ++ rightNonKeys.map(right(_)) ++ compColOut
+    }
+    val result = compCol.map(x => col(x + "_eq")).reduce(_ && _)
+    joint.select(outputCols: _*).withColumn("isCongruent", result)
+  }
+
 
   /** Calssifies the value in the column
     *
