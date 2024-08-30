@@ -2,7 +2,7 @@ package com.github.vegabondx.dftools
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should
-import CaseClassUtils._
+import com.github.vegabondx.dftools.CaseClassUtils._
 
 class CaseClassUtilsTest extends AnyFreeSpec with should.Matchers {
   case class Person(name: String, age: Int)

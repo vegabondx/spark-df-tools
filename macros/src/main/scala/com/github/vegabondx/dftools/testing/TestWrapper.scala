@@ -1,4 +1,4 @@
-package com.github.vegabondx.dftools
+package com.github.vegabondx.dftools.testing
 
 import com.holdenkarau.spark.testing.{DataFrameSuiteBase, DatasetSuiteBase}
 import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession, Encoder}

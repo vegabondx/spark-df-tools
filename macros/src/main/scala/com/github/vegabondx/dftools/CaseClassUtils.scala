@@ -1,15 +1,15 @@
 package com.github.vegabondx.dftools
 
-import org.json4s.{Formats, NoTypeHints}
-
-import scala.reflect.runtime.universe._
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization.write
+import org.json4s.{Formats, NoTypeHints}
 
 import scala.reflect.ClassTag
+import scala.reflect.runtime.universe._
 
-/** Contains tools primarily meant for Testing and Debugging
-  */
+/** Contains tools primarily meant for Testing and Debugging of case class objects
+ * avoids Encoder or Dataframe terminology
+ */
 object CaseClassUtils {
 
   implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)

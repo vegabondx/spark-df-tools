@@ -1,9 +1,4 @@
-package com.github.vegabondx.dftools
-
-import org.apache.spark.sql.{Column, DataFrame, Dataset, SparkSession, Encoder}
-
-import com.github.vegabondx.dftools.TestWrapper
-import scala.io.Source
+package com.github.vegabondx.dftools.testing
 
 // The string argument given to getResource is a path relative to
 // the resources directory.

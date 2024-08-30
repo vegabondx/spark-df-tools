@@ -1,4 +1,4 @@
-package com.github.vegabondx.dftools
+package com.github.vegabondx.dftools.testing
 
 import org.apache.spark.sql.functions.{col, lower, when, lit}
 import org.apache.spark.sql.{Column, DataFrame}
