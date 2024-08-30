@@ -18,14 +18,13 @@ object DfTools {
   def seqToCol(colString: String, char: Char = ','): Seq[Column] =
     colString.split(char).map(c => col(c))
 
-  /**
-   * Creates condition over primary key to filter it to a single row
-   * can be then applied to df or any other data frame
-   * @param df  a filtered dataframe with a condition to be tested
-   * @param key key to be picked
-   */
-  def pick(df:DataFrame,key:Seq[String]): Column = key.map(k=> col(k) <=> df.head(1)(0).getAs[String](k)).reduce(_ && _)
-
+  /** Creates condition over primary key to filter it to a single row
+    * can be then applied to df or any other data frame
+    * @param df  a filtered dataframe with a condition to be tested
+    * @param key key to be picked
+    */
+  def pick(df: DataFrame, key: Seq[String]): Column =
+    key.map(k => col(k) <=> df.head(1)(0).getAs[String](k)).reduce(_ && _)
 
   /** Creates join expressions for similar tables
     *
@@ -96,8 +95,6 @@ object DfTools {
     }
   }
 
-
-
   /** Compares similar dataframe columns
     *
     * @param joint   joint dataframe with suffixes
@@ -116,21 +113,20 @@ object DfTools {
 
   // TODO check if columns match
   // TODO check if primary keys is primary key
-  /**
-   * @param left Left Dataframe
-   * @param right Right dataframe
-   * @param keys Primary Key
-   * @param compCol columns to compare
-   * @param full if all the full join needs to be extracted out
-   * @return Key + comparison columns + aggregated comparison
-   */
+  /** @param left Left Dataframe
+    * @param right Right dataframe
+    * @param keys Primary Key
+    * @param compCol columns to compare
+    * @param full if all the full join needs to be extracted out
+    * @return Key + comparison columns + aggregated comparison
+    */
   def checkEquality(
-                     left: DataFrame,
-                     right: DataFrame,
-                     keys: Seq[String],
-                     compCol: Seq[String],
-                     full: Boolean = false
-                   ): DataFrame = {
+      left: DataFrame,
+      right: DataFrame,
+      keys: Seq[String],
+      compCol: Seq[String],
+      full: Boolean = false
+  ): DataFrame = {
     val jx = getJoinExpr(keys, left, right)
     val joint = left.join(right, jx, "inner")
     val compColOut = compCol.map(x => left(x) <=> right(x) as x + "_eq")
@@ -138,12 +134,14 @@ object DfTools {
     val rightNonKeys = right.columns.toSet.diff(keys.toSet).toSeq
     val outputCols = full match {
       case false => keys.map(left(_)) ++ compColOut
-      case _ => keys.map(left(_)) ++ leftNonKeys.map(left(_)) ++ rightNonKeys.map(right(_)) ++ compColOut
+      case _ =>
+        keys.map(left(_)) ++ leftNonKeys.map(left(_)) ++ rightNonKeys.map(
+          right(_)
+        ) ++ compColOut
     }
     val result = compCol.map(x => col(x + "_eq")).reduce(_ && _)
     joint.select(outputCols: _*).withColumn("isCongruent", result)
   }
-
 
   /** Calssifies the value in the column
     *
